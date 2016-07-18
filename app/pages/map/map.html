@@ -1,3 +1,13 @@
-<ion-content>
-  <div id="map"></div>
-</ion-content>
+<div class="ui three item inverted menu">
+	<a class="item active">
+		Map
+	</a>
+	<a class="item" [navPush]="chatPage">
+		Chat
+	</a>
+	<a class="item" [navPush]="settingsPage">
+		Settings
+	</a>
+</div>
+
+<div class="map"></div>
