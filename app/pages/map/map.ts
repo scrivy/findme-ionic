@@ -29,6 +29,10 @@ export class MapPage implements AfterViewInit {
 
   	L.tileLayer('https://findme.danielscrivano.com/tiles/{z}/{x}/{y}.png').addTo(this.map);
 
+    for (var position of this.locationService.locations) {
+      this.updateTheirLocation(position)
+    }
+
   	this.locationService.eventEmitter.subscribe(
   		message => {
   			switch (message.action) {
