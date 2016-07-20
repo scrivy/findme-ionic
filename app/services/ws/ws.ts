@@ -48,9 +48,10 @@ export class WsService {
                 console.error(event);
                 return;
             }
-//            console.log('webSocket message: ', message);
 
             if (!message.action || !message.data) return console.error('webSocket error: no action or data property from incoming message');
+
+            console.log(message.action, message.data);
 
             this.eventEmitter.emit(message)
 //            if (handlers[message.action]) {

@@ -41,8 +41,12 @@ export class MapPage implements AfterViewInit {
   						this.updateTheirLocation(position)
   					}
   				break
+          case 'updateLocation':
+            this.updateTheirLocation(message.data)
+            break
           default:
-            console.log(message)
+            console.log("did not match a case")
+            break
   			}
   		}
   	)
