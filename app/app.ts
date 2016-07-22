@@ -3,13 +3,13 @@ import {Platform, ionicBootstrap} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
 import {MapPage} from './pages/map/map';
 import {WsService} from './services/ws/ws';
-import {LocationsService} from './services/locations/locations'
+import {LocationService} from './services/locations/locations'
 
 @Component({
   template: '<ion-nav [root]="rootPage"></ion-nav>',
   providers: [
     WsService,
-    LocationsService
+    LocationService
   ]
 })
 export class MyApp {

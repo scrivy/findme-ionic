@@ -1,8 +1,9 @@
-import {Component, AfterViewInit, ElementRef} from '@angular/core';
+import {Component, OnInit, AfterViewInit, ElementRef} from '@angular/core';
 import {NavController} from 'ionic-angular';
 import {ChatPage} from '../chat/chat'
 import {SettingsPage} from '../settings/settings'
-import {LocationsService} from '../../services/locations/locations'
+import {LocationService} from '../../services/locations/locations'
+import {WsService} from '../../services/ws/ws'
 
 declare var $:any
 declare var L:any
@@ -10,16 +11,66 @@ declare var L:any
 @Component({
   templateUrl: 'build/pages/map/map.html'
 })
-export class MapPage implements AfterViewInit {
+export class MapPage implements OnInit, AfterViewInit {
   private map: any
   public chatPage: any = ChatPage
   public settingsPage: any = SettingsPage
   private everyone: Object = {}
+  private my: any
 
   constructor(
   	private navController: NavController,
   	public element: ElementRef,
-    private locationService: LocationsService) {}
+    private locationService: LocationService,
+    private wsService: WsService) {}
+
+  ngOnInit() {
+    window.navigator.geolocation.watchPosition(
+      this.formatAndStorePosition.bind(this),
+      function() {
+        console.log('geolocation error')
+      },
+      {enableHighAccuracy: true});
+  }
+
+  private formatAndStorePosition(position) {
+    let formattedPosition = {
+      latlng: [position.coords.latitude, position.coords.longitude],
+      accuracy: Math.ceil(position.coords.accuracy)
+    };
+    this.locationService.position = formattedPosition;
+    this.geo_success(formattedPosition);
+  }
+
+  private geo_success(position) {
+    this.wsService.send('updateLocation', position)
+    this.updateMyLocation(position)
+  }
+
+  private updateMyLocation(position) {
+      if (this.my) {
+          this.my.marker.setLatLng(position.latlng);
+          this.my.circle.
+              setLatLng(position.latlng).
+              setRadius(position.accuracy)
+          ;
+      } else {
+          this.my = {
+              marker: L.marker(position.latlng, {
+                  icon: L.icon({
+                      iconUrl: 'img/mymarker.png',
+                      iconSize: [25, 41],
+                      iconAnchor: [12, 40]
+                  }),
+                  alt: "Me!"
+              }).addTo(this.map),
+              circle: L.circle(position.latlng, position.accuracy, {
+                  fillOpacity: 0.5
+              }).addTo(this.map)
+          };
+      }
+    //  redrawLines();
+  }
 
   ngAfterViewInit() {
   	this.map = L.map(this.element.nativeElement.lastChild);

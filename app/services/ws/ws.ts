@@ -62,5 +62,36 @@ export class WsService {
 //                console.error('webSocket error: no handlers for action: ' + message.action);
 //            }
 		}
+
+        this.ws.onerror = function() {
+            console.error('webSocket error: onerror cb');
+        }
+
+        this.ws.onclose = function() {
+            console.error('webSocket error: onclose cb');
+        }
 	}
+
+    public send(action, data) {
+        let message
+        try {
+            message = JSON.stringify({ action: action, data: data});
+        } catch(e) {
+            console.log('webSocket error: json stringify error on send :',e);
+            return;
+        };
+
+        switch (this.ws.readyState) {
+            case 0: // connecting
+                console.log('webSocket: connecting');
+                break;
+            case 1: // open
+                this.ws.send(message);
+                break;
+            case 2: // closing
+            case 3: // closed
+                console.error('webSocket: closing or closed');
+                break;
+        };
+    }
 }
