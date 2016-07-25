@@ -69,7 +69,32 @@ export class MapPage implements OnInit, AfterViewInit {
               }).addTo(this.map)
           };
       }
-    //  redrawLines();
+      this.redrawLines();
+  }
+
+  private redrawLines(id?: string) {
+    if (!this.my) return
+
+    if (!id) { // redraw all lines
+      for (let id of Object.keys(this.everyone)) {
+        this.updateOrCreateLine(this.everyone[id])
+      }
+    } else {
+      this.updateOrCreateLine(this.everyone[id])
+    }   
+  }
+
+  private updateOrCreateLine(thisGuy: any) {
+    if (thisGuy.line) {
+      thisGuy.line.
+         setLatLngs([
+             this.my.marker.getLatLng(),
+             thisGuy.marker.getLatLng()
+         ])
+      ;
+    } else {
+        thisGuy.line = L.polyline([this.my.marker.getLatLng(), thisGuy.marker.getLatLng()]).addTo(this.map);
+    }
   }
 
   ngAfterViewInit() {
@@ -104,27 +129,29 @@ export class MapPage implements OnInit, AfterViewInit {
   }
 
   private updateTheirLocation(position) {
-	if (!this.everyone[position.id]) {
-		this.everyone[position.id] = {
-			marker: L.marker(position.latlng).addTo(this.map),
-			circle: L.circle(position.latlng, position.accuracy).addTo(this.map),
-			trail: L.polyline([position.latlng]).addTo(this.map),
-			line: null,
-		}
-	} else {
-		let thisGuy = this.everyone[position.id];
+  	if (!this.everyone[position.id]) {
+  		this.everyone[position.id] = {
+  			marker: L.marker(position.latlng).addTo(this.map),
+  			circle: L.circle(position.latlng, position.accuracy).addTo(this.map),
+  			trail: L.polyline([position.latlng]).addTo(this.map),
+  			line: null,
+  		}
+  	} else {
+  		let thisGuy = this.everyone[position.id];
 
-        thisGuy.marker.
-            setLatLng(position.latlng).
-            setOpacity(1);
+          thisGuy.marker.
+              setLatLng(position.latlng).
+              setOpacity(1);
 
-        thisGuy.circle.
-            setLatLng(position.latlng).
-            setRadius(position.accuracy).
-            setStyle({opacity: 0.5});
+          thisGuy.circle.
+              setLatLng(position.latlng).
+              setRadius(position.accuracy).
+              setStyle({opacity: 0.5});
 
-        thisGuy.trail.
-            addLatLng(position.latlng);
-	}
+          thisGuy.trail.
+              addLatLng(position.latlng);
+  	}
+
+    this.redrawLines(position.id)
   }
 }
