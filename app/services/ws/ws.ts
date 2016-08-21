@@ -7,7 +7,7 @@ export class WsService {
 
 	constructor() {
 		this.tryConnecting()
-		setInterval(this.checkConnection.bind(this), 5000)
+		setInterval(this.checkConnection.bind(this), 2000)
 	}
 
 
@@ -19,8 +19,8 @@ export class WsService {
 	}
 
 	private tryConnecting() {
-        this.ws = new WebSocket('wss://findme.danielscrivano.com/ws');
-
+//        this.ws = new WebSocket('wss://findme.danielscrivano.com/ws');
+        this.ws = new WebSocket('ws://findme.danielscrivano.com:5000/ws');
         this.ws.onopen = () => {
 //            console.log('webSocket: opened');
 
