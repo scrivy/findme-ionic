@@ -4,12 +4,13 @@ import { Injectable, EventEmitter } from '@angular/core'
 export class WsService {
 	private ws: any
 	public eventEmitter: EventEmitter<any> = new EventEmitter()
+    private id: string
 
 	constructor() {
+        this.id = localStorage.getItem("id")
 		this.tryConnecting()
 		setInterval(this.checkConnection.bind(this), 2000)
 	}
-
 
 	private checkConnection() {
 		if (this.ws.readyState > 1) {
@@ -20,9 +21,9 @@ export class WsService {
 
 	private tryConnecting() {
         this.ws = new WebSocket('wss://findme.danielscrivano.com/ws');
-//        this.ws = new WebSocket('ws://findme.danielscrivano.com:5000/ws');
+//        this.ws = new WebSocket('ws://localhost:5000/ws');
         this.ws.onopen = () => {
-//            console.log('webSocket: opened');
+            console.log('webSocket: opened');
 
 //            if (geoLocate.position) {
 //                var message;
@@ -53,7 +54,16 @@ export class WsService {
 
             console.log(message.action, message.data);
 
-            this.eventEmitter.emit(message)
+            if (message.action === 'yourId') {
+                if (this.id) {
+                    this.send("oldId", this.id)
+                }
+                this.id = message.data
+                localStorage.setItem("id", this.id)
+            } else {
+                this.eventEmitter.emit(message)
+            }
+
 //            if (handlers[message.action]) {
 //                handlers[message.action].forEach(function(fn) {
 //                    fn(message.data);

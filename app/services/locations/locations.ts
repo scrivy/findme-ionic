@@ -13,13 +13,16 @@ export class LocationService {
 				switch (message.action) {
 					case "allLocations":
 						this.locations = message.data
-						this.eventEmitter.emit(message)
 					break
 					case "updateLocation":
 						this.locations[message.data.id] = message.data
-						this.eventEmitter.emit(message)
+					break
+					case "oldId":
+						this.locations[message.data.NewId] = this.locations[message.data.OldId]
+						delete this.locations[message.data.OldId]
 					break
 				}
+				this.eventEmitter.emit(message)
 			}
 		)
 	}

@@ -120,6 +120,12 @@ export class MapPage implements OnInit, AfterViewInit {
           case 'updateLocation':
             this.updateTheirLocation(message.data)
             break
+          case 'oldId':
+            if (this.everyone[message.data.OldId]) {
+              this.everyone[message.data.NewId] = this.everyone[message.data.OldId]
+              delete this.everyone[message.data.OldId]
+            }
+            break
           default:
             console.log("did not match a case")
             break
