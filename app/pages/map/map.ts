@@ -17,6 +17,8 @@ export class MapPage implements OnInit, AfterViewInit {
   public settingsPage: any = SettingsPage
   private everyone: Object = {}
   private my: any
+  private watchId: any
+  private fadeIntervalId: any
 
   constructor(
   	private navController: NavController,
@@ -25,12 +27,34 @@ export class MapPage implements OnInit, AfterViewInit {
     private wsService: WsService) {}
 
   ngOnInit() {
-    window.navigator.geolocation.watchPosition(
+    this.watchId = window.navigator.geolocation.watchPosition(
       this.formatAndStorePosition.bind(this),
       function() {
         console.log('geolocation error')
       },
-      {enableHighAccuracy: true});
+      {enableHighAccuracy: true}
+    );
+
+    this.fadeIntervalId = setInterval(this.fadeEveryone.bind(this), 30000)
+  }
+
+  private fadeEveryone() {
+    Object.keys(this.everyone)
+      .forEach((id) => {
+        var person = this.everyone[id],
+          opacity = person.circle.options.opacity;
+
+        if (opacity > 0) {
+          person.circle.setStyle({ opacity: opacity - 0.05});
+          person.marker.setOpacity(person.marker.options.opacity - 0.1)
+        } else {
+          this.map.removeLayer(person.circle);
+          this.map.removeLayer(person.marker);
+          this.map.removeLayer(person.line);
+          delete this.everyone[id];
+        }
+      })
+    ;
   }
 
   private formatAndStorePosition(position) {
@@ -87,10 +111,10 @@ export class MapPage implements OnInit, AfterViewInit {
   private updateOrCreateLine(thisGuy: any) {
     if (thisGuy.line) {
       thisGuy.line.
-         setLatLngs([
-             this.my.marker.getLatLng(),
-             thisGuy.marker.getLatLng()
-         ])
+        setLatLngs([
+            this.my.marker.getLatLng(),
+            thisGuy.marker.getLatLng()
+        ])
       ;
     } else {
         thisGuy.line = L.polyline([this.my.marker.getLatLng(), thisGuy.marker.getLatLng()]).addTo(this.map);
@@ -114,7 +138,9 @@ export class MapPage implements OnInit, AfterViewInit {
   			switch (message.action) {
   				case 'allLocations':
   					for (var position of message.data) {
-  						this.updateTheirLocation(position)
+              if (position.id != this.wsService.id) {
+                this.updateTheirLocation(position)
+              }
   					}
   				break
           case 'updateLocation':

@@ -4,7 +4,7 @@ import { Injectable, EventEmitter } from '@angular/core'
 export class WsService {
 	private ws: any
 	public eventEmitter: EventEmitter<any> = new EventEmitter()
-    private id: string
+    public id: string
 
 	constructor() {
         this.id = localStorage.getItem("id")
