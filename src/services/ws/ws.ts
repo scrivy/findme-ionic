@@ -1,3 +1,4 @@
+import { Platform } from 'ionic-angular'
 import { Injectable, EventEmitter } from '@angular/core'
 
 @Injectable()
@@ -5,15 +6,34 @@ export class WsService {
 	private ws: any
 	public eventEmitter: EventEmitter<any> = new EventEmitter()
     public id: string
+    private intervalID: any
 
-	constructor() {
+	constructor(private platform: Platform) {
         this.id = localStorage.getItem("id")
-		this.tryConnecting()
-		setInterval(this.checkConnection.bind(this), 2000)
+
+        platform.ready().then(() => {
+            this.connect()
+        })
+        platform.pause.subscribe(() => {
+            this.disconnect()
+        })
+        platform.resume.subscribe(() => {
+           this.connect()
+        })
 	}
 
+    connect() {
+        this.intervalID = setInterval(this.checkConnection.bind(this), 2000)
+        this.tryConnecting()
+    }
+
+    disconnect() {
+        clearInterval(this.intervalID)
+        this.ws.close()
+    }
+
 	private checkConnection() {
-		if (this.ws.readyState > 1) {
+		if (this.ws && this.ws.readyState > 1) {
 			console.log('webSocket closed: attempting another connection')
 			this.tryConnecting()
 		}
@@ -77,9 +97,9 @@ export class WsService {
             console.error('webSocket error: onerror cb');
         }
 
-        this.ws.onclose = function() {
-            console.error('webSocket error: onclose cb');
-        }
+//        this.ws.onclose = function() {
+//            console.error('webSocket error: onclose cb');
+//        }
 	}
 
     public send(action, data) {

@@ -1,3 +1,4 @@
+import { Platform } from 'ionic-angular'
 import {Component, OnInit, AfterViewInit, ElementRef} from '@angular/core';
 import {NavController} from 'ionic-angular';
 import {LocationService} from '../../services/locations/locations'
@@ -20,9 +21,21 @@ export class MapPage implements OnInit, AfterViewInit {
   	private navController: NavController,
   	public element: ElementRef,
     private locationService: LocationService,
-    private wsService: WsService) {}
+    private wsService: WsService,
+    private platform: Platform) {
+      platform.pause.subscribe(() => {
+        this.pause()
+      })
+      platform.resume.subscribe(() => {
+        this.resume()
+      })
+  }
 
   ngOnInit() {
+    this.resume()
+  }
+
+  private resume() {
     this.watchId = window.navigator.geolocation.watchPosition(
       this.formatAndStorePosition.bind(this),
       function() {
@@ -32,6 +45,11 @@ export class MapPage implements OnInit, AfterViewInit {
     );
 
     this.fadeIntervalId = setInterval(this.fadeEveryone.bind(this), 30000)
+  }
+
+  private pause() {
+    window.navigator.geolocation.clearWatch(this.watchId)
+    clearInterval(this.fadeIntervalId)
   }
 
   private fadeEveryone() {
