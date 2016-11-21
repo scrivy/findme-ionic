@@ -4,6 +4,8 @@ import { MyApp } from './app.component';
 import { MapPage } from '../pages/map/map';
 import { WsService } from '../services/ws/ws';
 import { LocationService } from '../services/locations/locations';
+import { LocationTracker } from '../services/tracker/tracker'
+import { HttpModule } from '@angular/http'
 // import { AboutPage } from '../pages/about/about';
 // import { ContactPage } from '../pages/contact/contact';
 // import { HomePage } from '../pages/home/home';
@@ -19,7 +21,8 @@ import { LocationService } from '../services/locations/locations';
 //    TabsPage
   ],
   imports: [
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    HttpModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -32,7 +35,8 @@ import { LocationService } from '../services/locations/locations';
   ],
   providers: [
     WsService,
-    LocationService
+    LocationService,
+    LocationTracker
   ]
 })
 export class AppModule {}

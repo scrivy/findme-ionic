@@ -71,7 +71,7 @@ export class MapPage implements OnInit, AfterViewInit {
     ;
   }
 
-  private formatAndStorePosition(position) {
+  public formatAndStorePosition(position) {
     let formattedPosition = {
       latlng: [position.coords.latitude, position.coords.longitude],
       accuracy: Math.ceil(position.coords.accuracy)
