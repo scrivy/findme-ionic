@@ -1,8 +1,8 @@
 {
-  "name": "ionic-hello-world",
-  "author": "Ionic Framework",
-  "homepage": "http://ionicframework.com/",
-  "private": true,
+  "name": "findme-ionic",
+  "author": "Daniel Scrivano",
+  "homepage": "https://findme.danielscrivano.com/",
+  "private": false,
   "scripts": {
     "build": "ionic-app-scripts build",
     "watch": "ionic-app-scripts watch",
@@ -48,6 +48,5 @@
       "version": "",
       "locator": "ios"
     }
-  ],
-  "description": "tmpt: An Ionic project"
+  ]
 }
