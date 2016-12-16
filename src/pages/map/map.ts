@@ -3,6 +3,7 @@ import {Component, OnInit, AfterViewInit, ElementRef} from '@angular/core';
 import {NavController} from 'ionic-angular';
 import {LocationService} from '../../services/locations/locations'
 import {WsService} from '../../services/ws/ws'
+import { LocationTracker } from '../../services/tracker/tracker'
 
 declare var $:any
 declare var L:any
@@ -22,7 +23,8 @@ export class MapPage implements OnInit, AfterViewInit {
   	public element: ElementRef,
     private locationService: LocationService,
     private wsService: WsService,
-    private platform: Platform) {
+    private platform: Platform,
+    private tracker: LocationTracker) {
       platform.pause.subscribe(() => {
         this.pause()
       })
@@ -199,5 +201,18 @@ export class MapPage implements OnInit, AfterViewInit {
   	}
 
     this.redrawLines(position.id)
+  }
+
+  toggleModal() {
+    $('.ui.modal')
+      .modal('toggle')
+  }
+
+  startBackgroundTracking() {
+    this.tracker.startTracking();
+  }
+
+  stopBackgroundTracking() {
+    this.tracker.stopTracking();
   }
 }

@@ -9,5 +9,30 @@
 		Settings
 	</a>
 </div> -->
+<div
+	class="settings-icon"
+	(click)="toggleModal()">
+	<i class="ion-md-settings"></i>
+</div>
+
+<div class="ui modal">
+  <i class="close icon"></i>
+  <div class="header">
+    Settings
+  </div>
+  <div class="content">
+    <button
+    	class="ui button"
+    	(click)="startBackgroundTracking()">
+      Start Background Tracking
+    </button>
+    <br /><br />
+    <button
+    	class="ui button"
+    	(click)="stopBackgroundTracking()">
+      Stop Background Tracking
+    </button>
+  </div>
+</div>
 
 <div class="map"></div>

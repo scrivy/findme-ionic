@@ -55,12 +55,12 @@ export class LocationTracker {
 			}, config)
 
 		BackgroundGeolocation.start()
-
+/*
 		setTimeout(function() {
 			console.log('stopping background tracking')
 			BackgroundGeolocation.finish()
 		}, 600000)
-
+*/
 /*
 		// Foreground Tracking
 		let options = {
