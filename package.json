@@ -34,7 +34,9 @@
     "cordova-plugin-whitelist",
     "cordova-plugin-splashscreen",
     "cordova-plugin-statusbar",
-    "ionic-plugin-keyboard"
+    "ionic-plugin-keyboard",
+    "cordova-plugin-mauron85-background-geolocation",
+    "cordova-plugin-geolocation"
   ],
   "cordovaPlatforms": [
     "ios",
