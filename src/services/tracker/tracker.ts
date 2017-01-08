@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core'
 import { Http, Headers } from '@angular/http'
-import { Geolocation, Geoposition, BackgroundGeolocation } from 'ionic-native';
+import { BackgroundGeolocation } from 'ionic-native';
 import 'rxjs/add/operator/filter';
 
 @Injectable()

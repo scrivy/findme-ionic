@@ -1,2 +1,5 @@
-ionic run android --prod will do a production build that utilizes AoT compiling and minifaction. ionic emulate ios --prod will do a production build that utilizes AoT compiling and minifaction. ionic run android will do a development build ionic emulate ios will do a development build
+ionic run android --prod will do a production build that utilizes AoT compiling and minifaction.
+ionic emulate ios --prod will do a production build that utilizes AoT compiling and minifaction.
+ionic run android will do a development build
+ionic emulate ios will do a development build
 

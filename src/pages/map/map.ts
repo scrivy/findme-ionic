@@ -1,8 +1,8 @@
 import { Platform } from 'ionic-angular'
-import {Component, OnInit, AfterViewInit, ElementRef} from '@angular/core';
-import {NavController} from 'ionic-angular';
-import {LocationService} from '../../services/locations/locations'
-import {WsService} from '../../services/ws/ws'
+import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
+import { Geolocation } from 'ionic-native'
+import { LocationService } from '../../services/locations/locations'
+import { WsService } from '../../services/ws/ws'
 import { LocationTracker } from '../../services/tracker/tracker'
 
 declare var $:any
@@ -15,42 +15,44 @@ export class MapPage implements OnInit, AfterViewInit {
   private map: any
   private everyone: Object = {}
   private my: any
-  private watchId: any
+  private watchSub: any
   private fadeIntervalId: any
 
   constructor(
-  	private navController: NavController,
   	public element: ElementRef,
     private locationService: LocationService,
     private wsService: WsService,
     private platform: Platform,
-    private tracker: LocationTracker) {
-      platform.pause.subscribe(() => {
-        this.pause()
-      })
-      platform.resume.subscribe(() => {
-        this.resume()
-      })
-  }
+    private tracker: LocationTracker) {}
 
   ngOnInit() {
+    this.platform.pause.subscribe(() => {
+      this.pause()
+    })
+    this.platform.resume.subscribe(() => {
+      this.resume()
+    })
+
     this.resume()
   }
 
   private resume() {
-    this.watchId = window.navigator.geolocation.watchPosition(
-      this.formatAndStorePosition.bind(this),
-      function() {
-        console.log('geolocation error')
-      },
-      {enableHighAccuracy: true}
-    );
+    this.watchSub = Geolocation.watchPosition({
+      enableHighAccuracy: true
+    }).subscribe(position => {
+      let formattedPosition = {
+        latlng: [position.coords.latitude, position.coords.longitude],
+        accuracy: Math.ceil(position.coords.accuracy)
+      }
+      this.locationService.position = formattedPosition
+      this.geo_success(formattedPosition)
+    })
 
     this.fadeIntervalId = setInterval(this.fadeEveryone.bind(this), 30000)
   }
 
   private pause() {
-    window.navigator.geolocation.clearWatch(this.watchId)
+    this.watchSub.unsubscribe()
     clearInterval(this.fadeIntervalId)
   }
 
@@ -71,15 +73,6 @@ export class MapPage implements OnInit, AfterViewInit {
         }
       })
     ;
-  }
-
-  public formatAndStorePosition(position) {
-    let formattedPosition = {
-      latlng: [position.coords.latitude, position.coords.longitude],
-      accuracy: Math.ceil(position.coords.accuracy)
-    };
-    this.locationService.position = formattedPosition;
-    this.geo_success(formattedPosition);
   }
 
   private geo_success(position) {

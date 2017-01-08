@@ -1,9 +1,9 @@
-import { NgModule } from '@angular/core';
-import { IonicApp, IonicModule } from 'ionic-angular';
-import { MyApp } from './app.component';
-import { MapPage } from '../pages/map/map';
-import { WsService } from '../services/ws/ws';
-import { LocationService } from '../services/locations/locations';
+import { NgModule, ErrorHandler } from '@angular/core'
+import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular'
+import { MyApp } from './app.component'
+import { MapPage } from '../pages/map/map'
+import { WsService } from '../services/ws/ws'
+import { LocationService } from '../services/locations/locations'
 import { LocationTracker } from '../services/tracker/tracker'
 import { HttpModule } from '@angular/http'
 // import { AboutPage } from '../pages/about/about';
@@ -34,6 +34,7 @@ import { HttpModule } from '@angular/http'
 //    TabsPage
   ],
   providers: [
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
     WsService,
     LocationService,
     LocationTracker
