@@ -1,22 +1,17 @@
-import { Injectable, NgZone } from '@angular/core'
+import { Injectable } from '@angular/core'
 import { Http, Headers } from '@angular/http'
 import { BackgroundGeolocation } from 'ionic-native';
-import 'rxjs/add/operator/filter';
 
 @Injectable()
 export class LocationTracker {
-//	public watch: any
-//	public lat: number = 0;
-//	public lng: number = 0;
 	private headers: Headers = new Headers({ 'Content-Type': 'application/json' })
 
 	constructor(
-		public zone: NgZone,
 		private http: Http) {}
 
 	startTracking() {
 		let config = {
-			desiredAccuracy: 0,
+			desiredAccuracy: 1,
 			stationaryRadius: 3,
 			distanceFilter: 3, 
 			debug: false,
@@ -44,52 +39,17 @@ export class LocationTracker {
 						console.error("background http error: ", err)
 					}
 				)
-
-				// Run update inside of Angular's zone
-//				this.zone.run(() => {
-//					this.lat = location.latitude;
-//					this.lng = location.longitude;
-//				});
+				// ios only
+//				BackgroundGeolocation.finish()
 			}, (err) => {
 				console.log('backgroundGeolocation error:', err);
 			}, config)
 
 		BackgroundGeolocation.start()
-/*
-		setTimeout(function() {
-			console.log('stopping background tracking')
-			BackgroundGeolocation.finish()
-		}, 600000)
-*/
-/*
-		// Foreground Tracking
-		let options = {
-			frequency: 3000, 
-			enableHighAccuracy: true
-		}
-
-		this.watch = Geolocation.watchPosition(options)
-			.filter((p: any) => p.code === undefined)
-			.subscribe(
-				(position: Geoposition) => {
-					console.log(position);
-
-					// Run update inside of Angular's zone
-					this.zone.run(
-						() => {
-							this.lat = position.coords.latitude;
-							this.lng = position.coords.longitude;
-						}
-					);
-				}
-			)
-*/
 	}
 
 	stopTracking() {
 		console.log('stopTracking')
-
-		BackgroundGeolocation.finish()
-// this.watch.unsubscribe()
+		BackgroundGeolocation.stop()
 	}
 }

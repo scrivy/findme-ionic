@@ -39,14 +39,26 @@ export class MapPage implements OnInit, AfterViewInit {
   private resume() {
     this.watchSub = Geolocation.watchPosition({
       enableHighAccuracy: true
-    }).subscribe(position => {
-      let formattedPosition = {
-        latlng: [position.coords.latitude, position.coords.longitude],
-        accuracy: Math.ceil(position.coords.accuracy)
-      }
-      this.locationService.position = formattedPosition
-      this.geo_success(formattedPosition)
     })
+    .subscribe(
+      position => {
+        if (!position.coords) {
+          for (var property in position) {
+            console.error("position " + property + ": " + position[property])
+          }
+          return
+        }
+
+        let formattedPosition = {
+          latlng: [position.coords.latitude, position.coords.longitude],
+          accuracy: Math.ceil(position.coords.accuracy)
+        }
+        this.locationService.position = formattedPosition
+        this.geo_success(formattedPosition)
+      },
+      err => {
+        console.error(err)
+      })
 
     this.fadeIntervalId = setInterval(this.fadeEveryone.bind(this), 30000)
   }
